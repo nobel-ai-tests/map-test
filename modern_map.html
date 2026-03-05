@@ -332,6 +332,12 @@
         });
 
         d3.select("#resetZoom").on("click", function() {
+            // Reset Data
+            customData = {};
+            d3.select("#jsonData").property("value", "{}");
+            updateVisuals();
+
+            // Reset Zoom
             svg.transition()
                .duration(750)
                .call(zoom.transform, d3.zoomIdentity);
