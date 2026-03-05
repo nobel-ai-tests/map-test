@@ -110,7 +110,6 @@
             fill: #333;
             text-anchor: middle;
             pointer-events: none;
-            text-shadow: -1px -1px 0 #fff, 1px -1px 0 #fff, -1px 1px 0 #fff, 1px 1px 0 #fff, 0px 0px 3px #fff;
         }
 
         /* Font Size List */
@@ -209,6 +208,10 @@
                 <input type="range" id="globalFontSize" min="6" max="24" value="10">
             </div>
             <div class="control-group">
+                <label>Label Outline Size</label>
+                <input type="range" id="outlineSize" min="0" max="5" step="0.5" value="1">
+            </div>
+            <div class="control-group">
                 <label>Font Weight</label>
                 <select id="fontWeight">
                     <option value="bold">Bold</option>
@@ -270,6 +273,7 @@
         
         d3.select("#globalFontSize").on("input", updateLabels);
         d3.select("#fontColor").on("input", updateLabels);
+        d3.select("#outlineSize").on("input", updateLabels);
         d3.select("#fontWeight").on("change", updateLabels);
         d3.select("#fontStyle").on("change", updateLabels);
 
@@ -412,6 +416,15 @@
             var fColor = d3.select("#fontColor").property("value");
             var fWeight = d3.select("#fontWeight").property("value");
             var fStyle = d3.select("#fontStyle").property("value");
+            var oSize = d3.select("#outlineSize").property("value");
+
+            var shadow = "";
+            if (oSize > 0) {
+                shadow = "-" + oSize + "px -" + oSize + "px 0 #fff, " +
+                         oSize + "px -" + oSize + "px 0 #fff, -" +
+                         oSize + "px " + oSize + "px 0 #fff, " +
+                         oSize + "px " + oSize + "px 0 #fff, 0px 0px " + (parseFloat(oSize) + 2) + "px #fff";
+            }
 
             var labels = g.selectAll(".state-label").data(geoJson.features);
 
@@ -434,7 +447,8 @@
                 })
                 .style("fill", fColor)
                 .style("font-weight", fWeight)
-                .style("font-style", fStyle);
+                .style("font-style", fStyle)
+                .style("text-shadow", shadow);
         }
 
         window.addEventListener("resize", function() {
