@@ -3,24 +3,12 @@
 This repository contains D3.js map visualizations and sample code files.
 
 ## Live Previews (GitHub Pages)
-- [Modernized US Agriculture Map](https://nobel-ai-tests.github.io/map-test/modern_map.html)
 
-The live site is available at: [https://nobel-ai-tests.github.io/map-test/](https://nobel-ai-tests.github.io/map-test/)
-
+- [Modernized version of the map](https://nobel-ai-tests.github.io/map-test/modern_map.html)
 - [D3 Based Map Index](https://nobel-ai-tests.github.io/map-test/D3%20based%20map/index.html)
 - [D3 Based Map Full Form](https://nobel-ai-tests.github.io/map-test/D3%20based%20map/full_form.html)
 - [NSF Map](https://nobel-ai-tests.github.io/map-test/inner/nsf_map.html)
 - [Test Page](https://nobel-ai-tests.github.io/map-test/test.html)
-
-## Repository Structure
-- [Modernized US Agriculture Map](./modern_map.html)
-
-You can also browse the source files directly:
-
-- [D3 Based Map Index](./D3%20based%20map/index.html)
-- [D3 Based Map Full Form](./D3%20based%20map/full_form.html)
-- [NSF Map](./inner/nsf_map.html)
-- [Test Page](./test.html)
 
 ---
 
