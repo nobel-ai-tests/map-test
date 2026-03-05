@@ -418,17 +418,27 @@
             var fStyle = d3.select("#fontStyle").property("value");
             var oSize = d3.select("#outlineSize").property("value");
 
-            var labels = g.selectAll(".state-label").data(geoJson.features);
+            // Sort features: 0s first, non-zeros last (so they are drawn on top)
+            var sortedFeatures = geoJson.features.slice().sort(function(a, b) {
+                var valA = customData[a.properties.name] || 0;
+                var valB = customData[b.properties.name] || 0;
+                // If both are > 0, we could also sort by value if needed, but the key is 0 vs non-zero
+                if (valA === 0 && valB > 0) return -1;
+                if (valA > 0 && valB === 0) return 1;
+                return 0;
+            });
+
+            var labels = g.selectAll(".state-label").data(sortedFeatures, function(d) { return d.properties.name; });
 
             var enter = labels.enter()
                 .append("text")
-                .attr("class", "state-label")
+                .attr("class", "state-label");
+            
+            labels.merge(enter)
                 .attr("transform", function(d) {
                     var c = path.centroid(d);
                     return c ? "translate(" + c + ")" : "translate(-100,-100)";
-                });
-
-            labels.merge(enter)
+                })
                 .text(function(d) {
                     var name = (format === "full") ? d.properties.name : (stateMap[d.properties.name] || d.properties.name);
                     var val = customData[d.properties.name] !== undefined ? customData[d.properties.name] : 0;
@@ -444,7 +454,8 @@
                 .style("stroke", "#fff")
                 .style("stroke-width", (oSize * 2) + "px")
                 .style("stroke-linecap", "round")
-                .style("stroke-linejoin", "round");
+                .style("stroke-linejoin", "round")
+                .order(); // Reorder DOM elements to match sorted data
         }
 
         window.addEventListener("resize", function() {
