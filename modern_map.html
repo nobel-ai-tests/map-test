@@ -304,30 +304,52 @@
 
             var input = {};
 
-            // 1. Try JSON / Python Dict Parser
+            // 1. Try JSON / Python Dict Parser first
             try {
                 var sanitizedJSON = rawInput.replace(/'/g, '"');
                 input = JSON.parse(sanitizedJSON);
             } catch (e) {
-                // 2. Try CSV or Space-Separated Line Parser
+                // 2. Fallback to Line-by-Line Parser
                 input = {};
                 var lines = rawInput.split(/\r?\n/);
                 lines.forEach(function(line) {
                     line = line.trim();
                     if (!line) return;
                     
-                    // Split by comma or one or more spaces
-                    var parts = line.split(/[,|\s+]/);
-                    if (parts.length >= 2) {
-                        var key = parts[0].trim();
-                        var val = parseFloat(parts[parts.length - 1].trim());
-                        if (!isNaN(val)) input[key] = val;
+                    var stateKey = "";
+                    var valToAdd = 1;
+
+                    // Handle "State Full Name - Abbr" pattern
+                    if (line.includes(" - ")) {
+                        stateKey = line.split(" - ")[0].trim();
+                        valToAdd = 1;
+                    } else {
+                        // Check for CSV or Space-Separated with a trailing number
+                        var parts = line.split(/[,|\t]|\s{2,}/); // Try comma, tab, or double space first
+                        if (parts.length < 2) parts = line.split(/\s+/); // Fallback to single space
+
+                        var lastPart = parts[parts.length - 1];
+                        var numericVal = parseFloat(lastPart);
+
+                        if (!isNaN(numericVal) && parts.length > 1) {
+                            // It's "State 123" format
+                            stateKey = parts.slice(0, -1).join(" ").trim();
+                            valToAdd = numericVal;
+                        } else {
+                            // It's just "StateName" - count as 1
+                            stateKey = line;
+                            valToAdd = 1;
+                        }
+                    }
+
+                    if (stateKey) {
+                        input[stateKey] = (input[stateKey] || 0) + valToAdd;
                     }
                 });
             }
 
             if (Object.keys(input).length === 0) {
-                alert("Could not parse data. Ensure it's JSON, CSV, or State Value (one per line).");
+                alert("Could not parse data. Ensure it's JSON, CSV, or a list of states.");
                 return;
             }
 
