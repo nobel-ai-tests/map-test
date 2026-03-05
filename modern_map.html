@@ -164,6 +164,10 @@
                 <input type="color" id="colorHigh" value="#006d2c">
             </div>
             <div class="control-group">
+                <label>Zero/No Value Color</label>
+                <input type="color" id="colorZero" value="#eeeeee">
+            </div>
+            <div class="control-group">
                 <label>Spectrum Steps</label>
                 <input type="range" id="colorSteps" min="2" max="9" value="5">
             </div>
@@ -271,6 +275,7 @@
 
         d3.select("#colorLow").on("input", updateColorRange);
         d3.select("#colorHigh").on("input", updateColorRange);
+        d3.select("#colorZero").on("input", updateVisuals);
         d3.select("#colorSteps").on("input", updateColorRange);
 
         function updateColorRange() {
@@ -379,6 +384,7 @@
         });
 
         function updateVisuals() {
+            var zeroColor = d3.select("#colorZero").property("value");
             var values = Object.values(customData);
             if (values.length > 0) {
                 color.domain([d3.min(values), d3.max(values)]);
@@ -390,7 +396,11 @@
                 .transition().duration(500)
                 .style("fill", function(d) {
                     var val = customData[d.properties.name];
-                    return val !== undefined ? color(val) : "#eee";
+                    // If the value is undefined OR exactly 0, use the zero color
+                    if (val === undefined || val === 0) {
+                        return zeroColor;
+                    }
+                    return color(val);
                 });
 
             updateLabels();
