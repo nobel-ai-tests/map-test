@@ -169,10 +169,10 @@
         </div>
 
         <div class="config-section">
-            <h3>Custom Data (JSON)</h3>
+            <h3>Custom Data</h3>
             <div class="control-group">
-                <label>State Data (e.g. {"CA": 10, "NY": 5})</label>
-                <textarea id="jsonData">{}</textarea>
+                <label>Format: JSON, CSV (State,Val), or Space (State Val)</label>
+                <textarea id="jsonData" placeholder='{"CA": 10} or CA,10 or CA 10'>{}</textarea>
             </div>
             <button class="btn btn-primary" id="applyData">Apply Data</button>
         </div>
@@ -256,22 +256,45 @@
         d3.select("#nameFormat").on("change", updateLabels);
 
         d3.select("#applyData").on("click", function() {
+            var rawInput = d3.select("#jsonData").property("value").trim();
+            if (!rawInput) return;
+
+            var input = {};
+
+            // 1. Try JSON / Python Dict Parser
             try {
-                var rawInput = d3.select("#jsonData").property("value");
-                // Pre-process: replace single quotes with double quotes to support Python-style dicts
-                var sanitizedInput = rawInput.replace(/'/g, '"');
-                var input = JSON.parse(sanitizedInput);
-                
-                customData = {};
-                for (var key in input) {
-                    var fullStateName = reverseMap[key.toUpperCase()] || key;
-                    customData[fullStateName] = input[key];
-                }
-                updateVisuals();
-            } catch (e) { 
-                console.error(e);
-                alert("Invalid format. Please ensure data is in JSON or Python dictionary format."); 
+                var sanitizedJSON = rawInput.replace(/'/g, '"');
+                input = JSON.parse(sanitizedJSON);
+            } catch (e) {
+                // 2. Try CSV or Space-Separated Line Parser
+                input = {};
+                var lines = rawInput.split(/\r?\n/);
+                lines.forEach(function(line) {
+                    line = line.trim();
+                    if (!line) return;
+                    
+                    // Split by comma or one or more spaces
+                    var parts = line.split(/[,|\s+]/);
+                    if (parts.length >= 2) {
+                        var key = parts[0].trim();
+                        var val = parseFloat(parts[parts.length - 1].trim());
+                        if (!isNaN(val)) input[key] = val;
+                    }
+                });
             }
+
+            if (Object.keys(input).length === 0) {
+                alert("Could not parse data. Ensure it's JSON, CSV, or State Value (one per line).");
+                return;
+            }
+
+            customData = {};
+            for (var key in input) {
+                var upperKey = key.toUpperCase();
+                var fullStateName = reverseMap[upperKey] || key;
+                customData[fullStateName] = input[key];
+            }
+            updateVisuals();
         });
 
         d3.select("#resetZoom").on("click", function() {
