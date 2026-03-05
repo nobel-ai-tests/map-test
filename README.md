@@ -16,3 +16,10 @@ Always find the latest book info at: [d3book.com](http://d3book.com)
 This is version **2.0** of the examples, which should sync perfectly with what appears in the second edition. (Fingers crossed.)
 
 For code shown in the **first edition of the book** (published March 2013), find version 1.0 on [the releases page](https://github.com/alignedleft/d3-book/releases).
+
+## Live Previews
+
+- [D3 Based Map Index](https://nobel-ai-tests.github.io/ai-test/D3%20based%20map/index.html)
+- [D3 Based Map Full Form](https://nobel-ai-tests.github.io/ai-test/D3%20based%20map/full_form.html)
+- [NSF Map](https://nobel-ai-tests.github.io/ai-test/inner/nsf_map.html)
+- [Test Page](https://nobel-ai-tests.github.io/ai-test/test.html)
