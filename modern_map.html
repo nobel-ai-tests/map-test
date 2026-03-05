@@ -223,14 +223,21 @@
 
         d3.select("#applyData").on("click", function() {
             try {
-                var input = JSON.parse(d3.select("#jsonData").property("value"));
+                var rawInput = d3.select("#jsonData").property("value");
+                // Pre-process: replace single quotes with double quotes to support Python-style dicts
+                var sanitizedInput = rawInput.replace(/'/g, '"');
+                var input = JSON.parse(sanitizedInput);
+                
                 customData = {};
                 for (var key in input) {
                     var fullStateName = reverseMap[key.toUpperCase()] || key;
                     customData[fullStateName] = input[key];
                 }
                 updateVisuals();
-            } catch (e) { alert("Invalid JSON format"); }
+            } catch (e) { 
+                console.error(e);
+                alert("Invalid format. Please ensure data is in JSON or Python dictionary format."); 
+            }
         });
 
         d3.select("#resetZoom").on("click", function() {
