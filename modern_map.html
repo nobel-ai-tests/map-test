@@ -153,6 +153,22 @@
         </div>
 
         <div class="config-section">
+            <h3>Color Spectrum</h3>
+            <div class="control-group">
+                <label>Start Color (Low Value)</label>
+                <input type="color" id="colorLow" value="#edf8e9">
+            </div>
+            <div class="control-group">
+                <label>End Color (High Value)</label>
+                <input type="color" id="colorHigh" value="#006d2c">
+            </div>
+            <div class="control-group">
+                <label>Spectrum Steps</label>
+                <input type="range" id="colorSteps" min="2" max="9" value="5">
+            </div>
+        </div>
+
+        <div class="config-section">
             <h3>Custom Data (JSON)</h3>
             <div class="control-group">
                 <label>State Data (e.g. {"CA": 10, "NY": 5})</label>
@@ -218,6 +234,24 @@
                 return (individualFontSizes[d.properties.name] || size) + "px";
             });
         });
+
+        d3.select("#colorLow").on("input", updateColorRange);
+        d3.select("#colorHigh").on("input", updateColorRange);
+        d3.select("#colorSteps").on("input", updateColorRange);
+
+        function updateColorRange() {
+            var low = d3.select("#colorLow").property("value");
+            var high = d3.select("#colorHigh").property("value");
+            var steps = +d3.select("#colorSteps").property("value");
+            
+            var interpolator = d3.interpolateRgb(low, high);
+            var newRange = [];
+            for (var i = 0; i < steps; i++) {
+                newRange.push(interpolator(i / (steps - 1)));
+            }
+            color.range(newRange);
+            updateVisuals();
+        }
 
         d3.select("#nameFormat").on("change", updateLabels);
 
