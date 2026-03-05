@@ -21,63 +21,68 @@
 
         /* Sidebar styling */
         .sidebar {
-            width: 350px;
+            width: 300px;
             background: #fff;
-            border-right: 1px solid #ddd;
             display: flex;
             flex-direction: column;
             z-index: 1000;
-            box-shadow: 2px 0 10px rgba(0,0,0,0.05);
+            box-shadow: 0 0 10px rgba(0,0,0,0.05);
             overflow-y: auto;
         }
 
+        .sidebar-left { border-right: 1px solid #ddd; }
+        .sidebar-right { border-left: 1px solid #ddd; }
+
         .sidebar-header {
-            padding: 20px;
+            padding: 15px;
             background: #2c3e50;
             color: white;
         }
 
-        .sidebar-header h2 { margin: 0; font-size: 1.2rem; }
+        .sidebar-header h2 { margin: 0; font-size: 1.1rem; }
 
         .config-section {
-            padding: 20px;
+            padding: 15px;
             border-bottom: 1px solid #eee;
         }
 
         .config-section h3 {
             margin-top: 0;
-            font-size: 0.9rem;
+            font-size: 0.85rem;
             color: #666;
             text-transform: uppercase;
             letter-spacing: 1px;
+            margin-bottom: 15px;
         }
 
         .control-group {
-            margin-bottom: 15px;
+            margin-bottom: 12px;
             display: flex;
             flex-direction: column;
             gap: 5px;
         }
 
-        label { font-size: 0.85rem; font-weight: 600; color: #444; }
+        label { font-size: 0.8rem; font-weight: 600; color: #444; }
 
         input[type="color"], input[type="range"], select, textarea {
             width: 100%;
-            padding: 8px;
+            padding: 6px;
             border: 1px solid #ddd;
             border-radius: 4px;
             box-sizing: border-box;
+            font-size: 13px;
         }
 
-        textarea { height: 120px; font-family: monospace; font-size: 12px; }
+        textarea { height: 100px; font-family: monospace; }
 
         .btn {
-            padding: 10px;
+            padding: 8px;
             border: none;
             border-radius: 4px;
             cursor: pointer;
             font-weight: 600;
             transition: opacity 0.2s;
+            font-size: 13px;
         }
 
         .btn-primary { background: #3498db; color: white; }
@@ -91,6 +96,7 @@
             display: flex;
             justify-content: center;
             align-items: center;
+            background-color: inherit; /* Follow body bg */
         }
 
         svg { width: 100%; height: 100%; cursor: grab; }
@@ -109,28 +115,27 @@
 
         /* Font Size List */
         .font-size-list {
-            max-height: 200px;
+            max-height: 400px;
             overflow-y: auto;
             border: 1px solid #eee;
-            padding: 10px;
+            padding: 8px;
             background: #fafafa;
         }
         .font-item {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 5px;
-            font-size: 12px;
+            margin-bottom: 8px;
+            font-size: 11px;
         }
-        .font-item input { width: 60px; }
-
     </style>
 </head>
 <body>
 
-    <div class="sidebar">
+    <!-- Left Sidebar: Data and Colors -->
+    <div class="sidebar sidebar-left">
         <div class="sidebar-header">
-            <h2>Map Configuration</h2>
+            <h2>Data & Spectrum</h2>
         </div>
 
         <div class="config-section">
@@ -146,20 +151,16 @@
                     <option value="abbr">Abbreviation</option>
                 </select>
             </div>
-            <div class="control-group">
-                <label>Global Label Font Size</label>
-                <input type="range" id="globalFontSize" min="6" max="24" value="10">
-            </div>
         </div>
 
         <div class="config-section">
             <h3>Color Spectrum</h3>
             <div class="control-group">
-                <label>Start Color (Low Value)</label>
+                <label>Low Value Color</label>
                 <input type="color" id="colorLow" value="#edf8e9">
             </div>
             <div class="control-group">
-                <label>End Color (High Value)</label>
+                <label>High Value Color</label>
                 <input type="color" id="colorHigh" value="#006d2c">
             </div>
             <div class="control-group">
@@ -171,17 +172,10 @@
         <div class="config-section">
             <h3>Custom Data</h3>
             <div class="control-group">
-                <label>Format: JSON, CSV (State,Val), or Space (State Val)</label>
+                <label>JSON, CSV, or Space-Separated</label>
                 <textarea id="jsonData" placeholder='{"CA": 10} or CA,10 or CA 10'>{}</textarea>
             </div>
-            <button class="btn btn-primary" id="applyData">Apply Data</button>
-        </div>
-
-        <div class="config-section">
-            <h3>Individual State Font Sizes</h3>
-            <div class="font-size-list" id="fontSizeList">
-                <!-- Populated by JS -->
-            </div>
+            <button class="btn btn-primary" id="applyData" style="width:100%">Apply Data</button>
         </div>
 
         <div class="config-section">
@@ -189,8 +183,50 @@
         </div>
     </div>
 
+    <!-- Central Map Area -->
     <div class="map-container">
         <svg id="map-svg"></svg>
+    </div>
+
+    <!-- Right Sidebar: Font Properties -->
+    <div class="sidebar sidebar-right">
+        <div class="sidebar-header">
+            <h2>Font Properties</h2>
+        </div>
+
+        <div class="config-section">
+            <h3>Global Style</h3>
+            <div class="control-group">
+                <label>Label Color</label>
+                <input type="color" id="fontColor" value="#333333">
+            </div>
+            <div class="control-group">
+                <label>Global Font Size</label>
+                <input type="range" id="globalFontSize" min="6" max="24" value="10">
+            </div>
+            <div class="control-group">
+                <label>Font Weight</label>
+                <select id="fontWeight">
+                    <option value="bold">Bold</option>
+                    <option value="normal">Normal</option>
+                    <option value="900">Heavy</option>
+                </select>
+            </div>
+            <div class="control-group">
+                <label>Font Style</label>
+                <select id="fontStyle">
+                    <option value="normal">Normal</option>
+                    <option value="italic">Italic</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="config-section">
+            <h3>State Font Sizes</h3>
+            <div class="font-size-list" id="fontSizeList">
+                <!-- Populated by JS -->
+            </div>
+        </div>
     </div>
 
     <script type="text/javascript">
@@ -210,7 +246,7 @@
         var reverseMap = {};
         for(var key in stateMap) reverseMap[stateMap[key]] = key;
 
-        var w = window.innerWidth - 350;
+        var w = window.innerWidth - 600; // Account for two 300px sidebars
         var h = window.innerHeight;
         var customData = {};
         var individualFontSizes = {};
@@ -228,12 +264,10 @@
         // Sidebar logic
         d3.select("#bgPicker").on("input", function() { d3.select("body").style("background-color", this.value); });
         
-        d3.select("#globalFontSize").on("input", function() {
-            var size = this.value;
-            d3.selectAll(".state-label").style("font-size", function(d) {
-                return (individualFontSizes[d.properties.name] || size) + "px";
-            });
-        });
+        d3.select("#globalFontSize").on("input", updateLabels);
+        d3.select("#fontColor").on("input", updateLabels);
+        d3.select("#fontWeight").on("change", updateLabels);
+        d3.select("#fontStyle").on("change", updateLabels);
 
         d3.select("#colorLow").on("input", updateColorRange);
         d3.select("#colorHigh").on("input", updateColorRange);
@@ -357,6 +391,9 @@
         function updateLabels() {
             var format = d3.select("#nameFormat").property("value");
             var globalSize = d3.select("#globalFontSize").property("value");
+            var fColor = d3.select("#fontColor").property("value");
+            var fWeight = d3.select("#fontWeight").property("value");
+            var fStyle = d3.select("#fontStyle").property("value");
 
             var labels = g.selectAll(".state-label").data(geoJson.features);
 
@@ -376,11 +413,14 @@
                 })
                 .style("font-size", function(d) {
                     return (individualFontSizes[d.properties.name] || globalSize) + "px";
-                });
+                })
+                .style("fill", fColor)
+                .style("font-weight", fWeight)
+                .style("font-style", fStyle);
         }
 
         window.addEventListener("resize", function() {
-            w = window.innerWidth - 350;
+            w = window.innerWidth - 600;
             h = window.innerHeight;
             svg.attr("viewBox", "0 0 " + w + " " + h);
             projection.translate([w / 2, h / 2]).scale(Math.min(w, h) * 1.3);
