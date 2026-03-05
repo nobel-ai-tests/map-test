@@ -3,6 +3,7 @@
 This repository contains D3.js map visualizations and sample code files.
 
 ## Live Previews (GitHub Pages)
+- [Modernized US Agriculture Map](https://nobel-ai-tests.github.io/map-test/modern_map.html)
 
 The live site is available at: [https://nobel-ai-tests.github.io/map-test/](https://nobel-ai-tests.github.io/map-test/)
 
@@ -12,6 +13,7 @@ The live site is available at: [https://nobel-ai-tests.github.io/map-test/](http
 - [Test Page](https://nobel-ai-tests.github.io/map-test/test.html)
 
 ## Repository Structure
+- [Modernized US Agriculture Map](./modern_map.html)
 
 You can also browse the source files directly:
 
