@@ -332,7 +332,9 @@
         });
 
         d3.select("#resetZoom").on("click", function() {
-            svg.transition().duration(750).call(zoom.transform, d3.zoomIdentity);
+            svg.transition()
+               .duration(750)
+               .call(zoom.transform, d3.zoomIdentity);
         });
 
         var geoJson;
