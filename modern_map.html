@@ -312,10 +312,13 @@
             json.features.forEach(function(f) {
                 var name = f.properties.name;
                 var item = list.append("div").attr("class", "font-item");
-                item.append("span").text(name);
+                item.append("span").text(name).style("flex", "1");
                 item.append("input")
-                    .attr("type", "number")
+                    .attr("type", "range")
+                    .attr("min", "6")
+                    .attr("max", "24")
                     .attr("value", 10)
+                    .style("width", "100px")
                     .on("input", function() {
                         individualFontSizes[name] = this.value;
                         updateLabels();
