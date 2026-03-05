@@ -418,14 +418,6 @@
             var fStyle = d3.select("#fontStyle").property("value");
             var oSize = d3.select("#outlineSize").property("value");
 
-            var shadow = "";
-            if (oSize > 0) {
-                shadow = "-" + oSize + "px -" + oSize + "px 0 #fff, " +
-                         oSize + "px -" + oSize + "px 0 #fff, -" +
-                         oSize + "px " + oSize + "px 0 #fff, " +
-                         oSize + "px " + oSize + "px 0 #fff, 0px 0px " + (parseFloat(oSize) + 2) + "px #fff";
-            }
-
             var labels = g.selectAll(".state-label").data(geoJson.features);
 
             var enter = labels.enter()
@@ -448,7 +440,11 @@
                 .style("fill", fColor)
                 .style("font-weight", fWeight)
                 .style("font-style", fStyle)
-                .style("text-shadow", shadow);
+                .style("paint-order", "stroke")
+                .style("stroke", "#fff")
+                .style("stroke-width", (oSize * 2) + "px")
+                .style("stroke-linecap", "round")
+                .style("stroke-linejoin", "round");
         }
 
         window.addEventListener("resize", function() {
